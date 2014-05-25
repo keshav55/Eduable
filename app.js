@@ -141,12 +141,21 @@ app.get('/search/:unixcommand', function(req, res) {
 
         return future;
         }   
-    var wit_response = request_wit(searchCommand);
-    wit_response.when(function(err, response) {
-        if (err) console.log(err); // handle error here
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify(response));
-    });
+    var wit_response = JSON.parse(request_wit(searchCommand));
+
+    var intent = wit_response.intent;
+    var value;
+    if (intent == 'get_info') {
+        value = wit_response.info_about_what.value;
+    }
+    if (intent == 'get_picture') {
+        value = wit_response.picture_of_what.value;
+    }
+    if (intent == 'definition') {
+        value = wit_response.def_of_what.value;
+    }
+
+    
 });
 
 
