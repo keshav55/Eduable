@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var compress = require('compression');
 var session = require('express-session');
 var bodyParser = require('body-parser');
+var https = require('https');
 var logger = require('morgan');
 var errorHandler = require('errorhandler');
 var csrf = require('lusca').csrf();
@@ -15,6 +16,7 @@ var methodOverride = require('method-override');
 var MongoStore = require('connect-mongo')({ session: session });
 var flash = require('express-flash');
 var path = require('path');
+var Future = require('futures').future;
 var mongoose = require('mongoose');
 var expressValidator = require('express-validator');
 var connectAssets = require('connect-assets');
@@ -75,6 +77,41 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
  */
 
 app.get('/', homeController.index);
+app.get('/search/:command', function(req, res) {
+	var searchCommand = req.params.command.split("+").join("%20");
+	
+	var request_wit = function(user_text) {
+    	var future = Future.create();
+    	var options = {
+        	host: 'api.wit.ai',
+        	path: '/message?v=20140524&q=' + searchCommand,
+        	// the Authorization header allows you to access your Wit.AI account
+        	// make sure to replace it with your own
+        	headers: {'Authorization': 'Bearer 4WIP3W3H3EHWXQ2ABINW3XLYY64JKWGS'}
+    	};
+
+    	https.request(options, function(res) {
+    		var response ='';
+        	res.on('data', function (chunk) {
+            	response += chunk;
+        	});
+
+        	res.on('end', function () {
+            	future.fulfill(undefined, JSON.parse(response));
+        	});
+    	}).on('error', function(e) {
+        	future.fulfill(e, undefined);
+    	}).end();
+
+    	return future;
+		}	
+    var wit_response = request_wit(searchCommand);
+    wit_response.when(function(err, response) {
+        if (err) console.log(err); // handle error here
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(response));
+    });
+});
 
 
 /**
