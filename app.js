@@ -87,15 +87,15 @@ var searchTopten = topten.getSearchUrl(searchTerms); // This constructs the url 
 
 request(searchTopten, function (error, response, body) {
   if (!error && response.statusCode == 200) {
-    console.log(body) // Here's the results from the api.
+    var res = JSON.parse(body);
   }
 });
 // This uses the request library to do the fetch from index.js
 
 var getSearchNow = topten.search(searchTerms);
 app.get('/', homeController.index);
-app.get('/search/:command', function(req, res) {
-	var searchCommand = req.params.command.split("+").join("%20");
+app.post('/', function(req, res) {
+	var searchCommand = req.query.command;
 	
 	var request_wit = function(user_text) {
     	var future = Future.create();
@@ -131,7 +131,7 @@ app.get('/search/:command', function(req, res) {
 });
 
 app.get('/search/:unixcommand', function(req, res) {
-    var searchCommand = req.params.unixcommand.split("+").join("%20");
+    var searchCommand = req.query.command;
     
     var request_wit = function(user_text) {
         var future = Future.create();
