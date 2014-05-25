@@ -24,9 +24,8 @@ var connectAssets = require('connect-assets');
  */
 
 var homeController = require('./controllers/home');
-var userController = require('./controllers/user');
-var apiController = require('./controllers/api');
-var contactController = require('./controllers/contact');
+
+var secrets = require('./config/secrets');
 
 /**
  * Create Express server.
@@ -69,8 +68,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(expressValidator());
 app.use(methodOverride());
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
 
 /**
