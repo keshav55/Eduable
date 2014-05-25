@@ -76,29 +76,33 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
  * Application routes.
  */
 
-// PearsonApis = require('./pearson_sdk.js');
-// var request = require ('request');
+PearsonApis = require('./pearson_sdk.js');
+var request = require ('request');
 
-// var dict = PearsonApis.dictionaries(); // Sets up travel api object, no apikey/sandbox access.
-// var entries = dict.entries;
-// console.log(entries);
+var dict = PearsonApis.dictionaries(); // Sets up travel api object, no apikey/sandbox access.
+var entries = dict.entries;
+console.log(entries);
 
-// var searchobj = { headword: "cat"};
+var searchobj = { headword: "cat"};
 
-// console.log(searchobj);
-//  // gets the topten endpoint to query
-// // This constructs the url with all supplied search parameters and limitations
-// var nresult = entries.search(searchobj,0,5);
-// console.log (nresult);
+console.log(searchobj);
 
-// request(nresult, function (error, response, body) {
-//   if (!error && response.statusCode == 200) {
-//     console.log(body) // Here's the results from the api.
-//   }
-//   else {
-//     console.log('darn')
-//   }
-// });
+var results = entries.getSearchUrl(searchobj); // gets the topten endpoint to query
+// This constructs the url with all supplied search parameters and limitations
+console.log(results);
+var nresult = entries.search(searchobj,0,25);
+console.log (nresult);
+
+request(results, function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+  // Here's the results from the api.
+    var def = JSON.parse(body);
+    console.log(def);
+  }
+  else {
+    console.log('darn')
+  }
+});
 // This uses the request library to do the fetch from index.js
 
 // This uses the request library to do the fetch from index.js
