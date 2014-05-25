@@ -76,22 +76,34 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
 PearsonApis = require('./pearson_sdk.js');
 var request = require ('request');
 
-var api = PearsonApis.dictionaries(); // Sets up travel api object, no apikey/sandbox access.
-var entries = api.entries; // gets the topten endpoint to query
-var searchTerms = { search: "restaurant" }
+var dict = PearsonApis.dictionaries(); // Sets up travel api object, no apikey/sandbox access.
+var entries = dict.entries;
+console.log(entries);
 
-console.log = (searchTerms);
+var searchobj = { headword: "cat"};
 
-var searchEntries = entries.getSearchUrl(searchTerms); // This constructs the url with all supplied search parameters and limitations
+console.log(searchobj);
 
-request(searchEntries, function (error, response, body) {
+var results = entries.getSearchUrl(searchobj); // gets the topten endpoint to query
+// This constructs the url with all supplied search parameters and limitations
+console.log(results);
+var nresult = entries.search(searchobj,0,25);
+console.log (nresult);
+
+request(results, function (error, response, body) {
   if (!error && response.statusCode == 200) {
-    var res = JSON.parse(body);
+  // Here's the results from the api.
+    var def = JSON.parse(body);
+    console.log(def);
+  }
+  else {
+    console.log('darn')
   }
 });
 // This uses the request library to do the fetch from index.js
 
-var getSearchNow = entries.search(searchTerms);
+// This uses the request library to do the fetch from index.js
+
 app.get('/', homeController.index);
 app.get('/search', function(req, res) {
     //res.render('query');

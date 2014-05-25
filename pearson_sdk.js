@@ -25,7 +25,7 @@ var Apis = {
 function Pearson(apikey, proxy) {
     'use strict';
     if (typeof proxy == "undefined"){
-        this.apikey = apikey;
+        this.apikey = "UpLGN1J9sY0YCynH0cFovSjGWYGvhFYH";
         this.base = "http://api.pearson.com/v2/"
     } else {
         // apikey provided by proxy
