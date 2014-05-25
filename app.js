@@ -94,7 +94,8 @@ request(searchTopten, function (error, response, body) {
 
 var getSearchNow = topten.search(searchTerms);
 app.get('/', homeController.index);
-app.post('/', function(req, res) {
+app.get('/search', function(req, res) {
+    res.render('query');
 	var searchCommand = req.query.command;
 	
 	var request_wit = function(user_text) {
