@@ -113,6 +113,43 @@ app.get('/search/:command', function(req, res) {
     });
 });
 
+app.get('/search/:unixcommand', function(req, res) {
+    var searchCommand = req.params.unixcommand.split("+").join("%20");
+    
+    var request_wit = function(user_text) {
+        var future = Future.create();
+        var options = {
+            host: 'api.wit.ai',
+            path: '/message?v=20140524&q=' + searchCommand,
+            // the Authorization header allows you to access your Wit.AI account
+            // make sure to replace it with your own
+            headers: {'Authorization': 'Bearer FPSR4MDXNAHLC75JSZ3ZAFCP66N6IFXY'}
+        };
+
+        https.request(options, function(res) {
+            var response ='';
+            res.on('data', function (chunk) {
+                response += chunk;
+            });
+
+            res.on('end', function () {
+                future.fulfill(undefined, JSON.parse(response));
+            });
+        }).on('error', function(e) {
+            future.fulfill(e, undefined);
+        }).end();
+
+        return future;
+        }   
+    var wit_response = request_wit(searchCommand);
+    wit_response.when(function(err, response) {
+        if (err) console.log(err); // handle error here
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(response));
+    });
+});
+
+
 
 /**
  * 500 Error Handler.
