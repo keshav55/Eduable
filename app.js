@@ -160,6 +160,7 @@ app.get('/search', function(req, res) {
         }
         else if (intent == 'navigate' && response.outcome.entities.where_to_go.value == 'root') {
             res.end('cd /');
+            //res.render('result', {result: 'cd /'})
         }
         else if (intent == 'navigate' && response.outcome.entities.where_to_go.value == 'up a directory') {
             res.end('cd ..');

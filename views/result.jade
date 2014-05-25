@@ -4,10 +4,8 @@ html
 		script(src='js/script.js')
 	body
 		#screen
-			.logoSwag
-			img.logo(src='img/logo.png')
 			form(action='/search')
-				input.godBox(placeholder='Type or say search query and press enter', name='command', method='post')
+				label.godBox {result}
 		
 
 
