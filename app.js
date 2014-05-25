@@ -76,27 +76,26 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
  * Application routes.
  */
 
-app.get('/', homeController.index);
-app.get('/search/:command', function(req, res) {
-
-
-	var searchCommand = req.params.command.split("+").join("%20");
-
-    var PearsonApis = require("./lib/pearson-sdk.js");
+PearsonApis = require('./pearson_sdk.js');
 var request = require ('request');
 
-var travelApi = PearsonApis.travel();
-var topten = travelApi.topten;
+var api = PearsonApis.travel(); // Sets up travel api object, no apikey/sandbox access.
+var topten = api.topten; // gets the topten endpoint to query
+var searchTerms = { search: "restaurant" }
 
-var requestUrl = topten.getSearchUrl('cat');
+var searchTopten = topten.getSearchUrl(searchTerms); // This constructs the url with all supplied search parameters and limitations.
 
-request(requestUrl, function (error, response, body) {
+request(searchTopten, function (error, response, body) {
   if (!error && response.statusCode == 200) {
     console.log(body) // Here's the results from the api.
-} else {
-    console.log(error);
   }
 });
+// This uses the request library to do the fetch from index.js
+
+var getSearchNow = topten.search(searchTerms);
+app.get('/', homeController.index);
+app.get('/search/:command', function(req, res) {
+	var searchCommand = req.params.command.split("+").join("%20");
 	
 	var request_wit = function(user_text) {
     	var future = Future.create();
@@ -159,22 +158,14 @@ app.get('/search/:unixcommand', function(req, res) {
 
         return future;
         }   
-    var wit_response = JSON.parse(request_wit(searchCommand));
-
-    var intent = wit_response.intent;
-    var value;
-    if (intent == 'get_info') {
-        value = wit_response.info_about_what.value;
-    }
-    if (intent == 'get_picture') {
-        value = wit_response.picture_of_what.value;
-    }
-    if (intent == 'definition') {
-        value = wit_response.def_of_what.value;
-    }
+    var wit_response = request_wit(searchCommand);
+    wit_response.when(function(err, response) {
+        if (err) console.log(err); // handle error here
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        res.end(JSON.stringify(response));
+    });
 
 
-    
 });
 
 
