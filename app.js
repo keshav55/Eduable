@@ -78,7 +78,25 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
 
 app.get('/', homeController.index);
 app.get('/search/:command', function(req, res) {
+
+
 	var searchCommand = req.params.command.split("+").join("%20");
+
+    var PearsonApis = require("./lib/pearson-sdk.js");
+var request = require ('request');
+
+var travelApi = PearsonApis.travel();
+var topten = travelApi.topten;
+
+var requestUrl = topten.getSearchUrl('cat');
+
+request(requestUrl, function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+    console.log(body) // Here's the results from the api.
+} else {
+    console.log(error);
+  }
+});
 	
 	var request_wit = function(user_text) {
     	var future = Future.create();
@@ -154,6 +172,7 @@ app.get('/search/:unixcommand', function(req, res) {
     if (intent == 'definition') {
         value = wit_response.def_of_what.value;
     }
+
 
     
 });
