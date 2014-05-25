@@ -166,10 +166,12 @@ app.get('/search/:unixcommand', function(req, res) {
         return future;
         }   
     var wit_response = request_wit(searchCommand);
+    
     wit_response.when(function(err, response) {
         if (err) console.log(err); // handle error here
         res.writeHead(200, {'Content-Type': 'application/json'});
-        res.end(JSON.stringify(response));
+        console.log("swag", app.get('port'), app.get('env'));
+        //res.end(JSON.stringify(response));
     });
 
 

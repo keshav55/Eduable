@@ -56,7 +56,7 @@ window.onload=function(){
 	    }
 	    return increment;
 	}
-
+	
 	function output(color) {
 	    var rgb = document.getElementsByClassName("rgb");
 	    rgb[0].innerText = color[0];
