@@ -37,10 +37,6 @@ var app = express();
  * Mongoose configuration.
  */
 
-mongoose.connect(secrets.db);
-mongoose.connection.on('error', function() {
-  console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');
-});
 
 var hour = 3600000;
 var day = hour * 24;
@@ -72,37 +68,6 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: week }));
 /**
  * Application routes.
  */
-
-PearsonApis = require('./pearson_sdk.js');
-var request = require ('request');
-
-var dict = PearsonApis.dictionaries(); // Sets up travel api object, no apikey/sandbox access.
-var entries = dict.entries;
-console.log(entries);
-
-var searchobj = { headword: "cat"};
-
-console.log(searchobj);
-
-var results = entries.getSearchUrl(searchobj); // gets the topten endpoint to query
-// This constructs the url with all supplied search parameters and limitations
-console.log(results);
-var nresult = entries.search(searchobj,0,25);
-console.log (nresult);
-
-request(results, function (error, response, body) {
-  if (!error && response.statusCode == 200) {
-  // Here's the results from the api.
-    var def = JSON.parse(body);
-    console.log(def);
-  }
-  else {
-    console.log('darn')
-  }
-});
-// This uses the request library to do the fetch from index.js
-
-// This uses the request library to do the fetch from index.js
 
 app.get('/', homeController.index);
 app.get('/search', function(req, res) {
@@ -207,6 +172,7 @@ app.use(errorHandler());
  */
 
 app.listen(app.get('port'), function() {
+    console.log("Running");
 });
 
 module.exports = app;
