@@ -79,7 +79,7 @@ app.get('/search', function(req, res) {
             path: '/message?v=20140524&q=' + encodeURIComponent(searchCommand),
             // the Authorization header allows you to access your Wit.AI account
             // make sure to replace it with your own
-            headers: {'Authorization': 'Bearer FPSR4MDXNAHLC75JSZ3ZAFCP66N6IFXY'}
+            headers: {'Authorization': 'Bearer ' + process.env.WIT_AI_TOKEN}
         };
 
         https.request(options, function(res) {
